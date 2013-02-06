@@ -1,10 +1,16 @@
+import os
+import sys
+path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+sys.path.insert(0, path)
+
 import urllib
 import json
 import random
 
-from pipeline import Plugin, Pipeline
-from processor import Processor, MultiProcessor
-from parallelizer.mp import MultiProcessingParallelizer
+
+from octavious.pipeline import Plugin, Pipeline
+from octavious.process import Processor, MultiProcessor
+from octavious.parallelizer.pcelery import CeleryParallelizer
 
 
 class IOProcessor(Processor):
@@ -39,7 +45,7 @@ pipeline = Pipeline([SortPlugin()])
 processors = [IOProcessor(pipeline=sub_pipeline) for i in range(20)]
 
 multi_processor = MultiProcessor(processors,
-                                 parallelizer=MultiProcessingParallelizer(),
+                                 parallelizer=CeleryParallelizer(),
                                  pipeline=pipeline)
 
 print multi_processor({'n': 100})
