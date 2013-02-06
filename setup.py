@@ -8,4 +8,7 @@ setup(
     author='Metglobal',
     author_email='kadir.pekel@metglobal.com',
     url='https://github.com/metglobal/octavious',
+    extras_require={
+        'celery_parallelizer': ["celery"]
+    }
 )
