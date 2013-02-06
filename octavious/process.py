@@ -1,4 +1,4 @@
-from pipeline import Pipeline
+from octavious.pipeline import Pipeline
 
 
 class Processor(object):
