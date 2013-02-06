@@ -1,4 +1,4 @@
-from pipeline import Plugin, Pipeline
+from octavious.pipeline import Plugin, Pipeline
 
 
 def load_class(class_path):
@@ -14,7 +14,7 @@ def load_class(class_path):
     components = class_path.split('.')
     class_name = components.pop()
     module_path = '.'.join(components)
-    module = __import__(module_path)
+    module = __import__(module_path, globals(), locals(), [class_name])
     return getattr(module, class_name)
 
 
