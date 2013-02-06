@@ -16,7 +16,7 @@ class IOProcessor(Processor):
         return url.read()
 
 
-class DeserializerPlugin(Plugin):
+class DeserializePlugin(Plugin):
 
     def post_process(self, input, output):
         return json.loads(output)
@@ -33,7 +33,7 @@ class SortPlugin(Plugin):
     def post_process(self, input, output):
         return sorted(output)
 
-sub_pipeline = Pipeline([RefinePlugin(), DeserializerPlugin()])
+sub_pipeline = Pipeline([RefinePlugin(), DeserializePlugin()])
 pipeline = Pipeline([SortPlugin()])
 
 processors = [IOProcessor(pipeline=sub_pipeline) for i in range(20)]
