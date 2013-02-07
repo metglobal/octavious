@@ -11,7 +11,7 @@ class StopPostProcessException(Exception):
 class Plugin(object):
     """Base class for all kind of plugins"""
 
-    def pre_process(self, input, **kwargs):
+    def pre_process(self, input):
         """Takes effect before any actual underlying action is triggered.
         If this method returns any non ``None`` value, it breaks the current
         ``pre_processing`` loop in current container pipeline.
@@ -19,16 +19,13 @@ class Plugin(object):
         :param input: any input value which subjects to current context
         :param type: object
 
-        :param **kwargs: arbitrary keyword args
-        :param type: dict
-
         :returns: ``None`` or any convenient output value to interrupt pipeline
         :rtype: object, None
 
         """
         pass
 
-    def post_process(self, input, output, **kwargs):
+    def post_process(self, input, output):
         """Takes effect after actual resulting action is triggered. Any
         subclass should implement this function to take effect on output by
         returning either modified or a fresh one.
@@ -39,26 +36,23 @@ class Plugin(object):
         :param output: output value which is passed through in the pipeline
         :param type: object
 
-        :param **kwargs: arbitrary keyword args
-        :param type: dict
-
         :returns: fresh or modified output value
         :rtype: object
 
         """
         return output
 
-    def hook(self, callback, input, **kwargs):
-        output = self.pre_process(input, **kwargs)
+    def hookin(self, processor, input=None):
+        output = self.pre_process(input)
         if not output:
-            output = callback(input, **kwargs)
-        return self.post_process(input, output, **kwargs)
+            output = processor(input)
+        return self.post_process(input, output)
 
     def __call__(self, *args, **kwargs):
         """Convenient callable implementation to provide some syntactic sugar
 
         """
-        return self.hook(*args, **kwargs)
+        return self.hookin(*args, **kwargs)
 
 
 class Pipeline(Plugin):
@@ -83,7 +77,7 @@ class Pipeline(Plugin):
         self.plugins = plugins
         self.propagates_exceptions = propagates_exceptions
 
-    def pre_process(self, input, **kwargs):
+    def pre_process(self, input):
         """Executes all inner plugins' ``pre_process`` interface in order.
         If any of them returns a non ``None`` value, it breaks the loop by
         returning that value at all.
@@ -93,11 +87,11 @@ class Pipeline(Plugin):
 
         """
         for plugin in self.plugins:
-            output = plugin.pre_process(input, **kwargs)
+            output = plugin.pre_process(input)
             if output:
                 return output
 
-    def post_process(self, input, output, **kwargs):
+    def post_process(self, input, output):
         """Executes all inner plugins' ``post_process`` interface in order
         by chaining the output of a plugin to the next one.
 
@@ -113,7 +107,7 @@ class Pipeline(Plugin):
         """
         for plugin in reversed(self.plugins):
             try:
-                output = plugin.post_process(input, output, **kwargs)
+                output = plugin.post_process(input, output)
             except StopPostProcessException as e:
                 if self.propagates_exceptions:
                     raise e

@@ -1,8 +1,9 @@
 from multiprocessing import Pool
-from parallelizer import Parallelizer
+
+from octavious.parallelizer import Parallelizer
 
 
-class MultiProcessingParallelizer(Parallelizer):
+class MultiProcessingBackend(Parallelizer):
     """This class is basic implementation for parallelizing processors using
     python's builtin multiprocessing api
 
@@ -18,7 +19,7 @@ class MultiProcessingParallelizer(Parallelizer):
         """
         self.worker_count = worker_count or self.WORKER_COUNT
 
-    def parallelize(self, processors, input, **kwargs):
+    def parallelize(self, processors, input=None, callback=None):
         """Convenient ``Parallelizer.parallelize`` implementation using `Pool`
         class
 
@@ -27,7 +28,7 @@ class MultiProcessingParallelizer(Parallelizer):
         pool = Pool(processes=self.worker_count)
         for processor in processors:
             async_result = pool.apply_async(
-                processor, (input,), kwargs, callback=results.append)
+                processor, (input,), callback=results.append)
         pool.close()
         pool.join()
         return results
