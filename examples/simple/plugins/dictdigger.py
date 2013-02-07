@@ -12,3 +12,5 @@ class DictDiggerPlugin(Plugin):
         for component in self.path.split('.'):
             output = output.get(component)
         return output
+
+plugin = DictDiggerPlugin

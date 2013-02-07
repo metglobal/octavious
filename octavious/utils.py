@@ -1,10 +1,20 @@
 from octavious.pipeline import Plugin, Pipeline
 
 
+def load_module(module_path, symbols=[]):
+    """Loads a module by given module path
+
+    :param module_path: module path
+    :param type: str
+
+    """
+    return __import__(module_path, globals(), locals(), symbols)
+
+
 def load_symbol(module_path, symbol):
     """Loads a symbol dynamically from a module by given module path
 
-    :param class_path: module path
+    :param module_path: module path
     :param type: str
 
     :param symbol: name of a symbol to load
@@ -14,7 +24,7 @@ def load_symbol(module_path, symbol):
     :rtype: object
 
     """
-    module = __import__(module_path, globals(), locals(), [symbol])
+    module = load_module(module_path, [symbol])
     return getattr(module, symbol)
 
 
@@ -25,21 +35,21 @@ def load_plugin(module_path, symbol='plugin'):
     :param module_path: module path
     :param type: str
 
-    :param symbol: name of a symbol which is a plugin instance
+    :param symbol: name of a symbol which is a plugin class
     :param type: str
 
-    :returns: loaded plugins
-    :rtype: ``Plugin``
+    :returns: plugin class
+    :rtype: class
 
     """
-    plugin = load_symbol(module_path, symbol)
-    if not isinstance(plugin, Plugin):
+    plugin_class = load_symbol(module_path, symbol)
+    if not issubclass(plugin_class, Plugin):
         raise TypeError('invalid plugin type')
-    return plugin
+    return plugin_class
 
 
 def load_plugins(module_paths, symbol='plugin'):
-    """Loads one more plugin by given list of module paths
+    """Loads one more plugin classes by given list of module paths
 
     :param module_paths: list of module paths
     :param type: list
@@ -47,7 +57,7 @@ def load_plugins(module_paths, symbol='plugin'):
     :param symbol: name of a symbol which is a plugin instance
     :param type: str
 
-    :returns: list of loaded plugins
+    :returns: list of loaded plugin classes
     :rtype: list
 
     """
@@ -117,7 +127,22 @@ def init_plugins(class_paths, *args, **kwargs):
 
 def create_pipeline(class_paths, *args, **kwargs):
     try:
-        plugins = load_plugins(class_paths, *args, **kwargs)
+        plugins = load_plugins(class_paths)
     except:
         plugins = init_plugins(class_paths, *args, **kwargs)
     return Pipeline(plugins)
+
+
+def plug(module_path, *args, **kwargs):
+    """Automatically loads and instantiates a plugin class by probing the
+    symbol name ```plugin`` with given args and kwargs
+
+    :param module_path: module path
+    :param type: list
+
+    :returns: plugin instance
+    :rtype: ``Plugin``
+
+    """
+    plugin_class = load_plugin(module_path)
+    return plugin_class(*args, **kwargs)
