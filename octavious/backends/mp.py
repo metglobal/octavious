@@ -32,3 +32,5 @@ class MultiProcessingBackend(Parallelizer):
         pool.close()
         pool.join()
         return results
+
+backend = MultiProcessingBackend

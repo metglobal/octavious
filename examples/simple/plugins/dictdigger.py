@@ -9,8 +9,11 @@ class DictDiggerPlugin(Plugin):
         self.path = path
 
     def post_process(self, input, output):
-        for component in self.path.split('.'):
-            output = output.get(component)
-        return output
+        filtered_output = []
+        for entry in output:
+            for component in self.path.split('.'):
+                entry = entry.get(component)
+            filtered_output.append(entry)
+        return filtered_output
 
 plugin = DictDiggerPlugin
