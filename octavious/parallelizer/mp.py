@@ -25,10 +25,15 @@ class MultiProcessingParallelizer(Parallelizer):
 
         """
         results = []
+
+        def aux(result):
+            results.append(result)
+            if callback:
+                callback(result, cumulative=results)
         pool = Pool(processes=self.worker_count)
         for processor in processors:
             async_result = pool.apply_async(
-                processor, (input,), callback=results.append)
+                processor, (input,), callback=aux)
         pool.close()
         pool.join()
         return results

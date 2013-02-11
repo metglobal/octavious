@@ -27,7 +27,7 @@ class OneToManyProcessor(Processor):
 
     """
 
-    def __init__(self, processors, parallelizer):
+    def __init__(self, processors, parallelizer, callback=None):
         """Constructor
 
         :param processors: processor list to parallelize
@@ -39,6 +39,7 @@ class OneToManyProcessor(Processor):
         """
         self.processors = processors
         self.parallelizer = parallelizer
+        self.callback = callback
 
     def process(self, input=None):
         """Implements ``process`` interface.
@@ -50,7 +51,8 @@ class OneToManyProcessor(Processor):
         :rtype: object
 
         """
-        return self.parallelizer(self.processors, input)
+        return self.parallelizer(
+            self.processors, input, callback=self.callback)
 
 
 class WrapperProcessor(Processor):
@@ -81,7 +83,7 @@ class ManyToOneProcessor(Processor):
 
     """
 
-    def __init__(self, processor, parallelizer):
+    def __init__(self, processor, parallelizer, callback=None):
         """Constructor
 
         :param processor: processor
@@ -93,6 +95,7 @@ class ManyToOneProcessor(Processor):
         """
         self.processor = processor
         self.parallelizer = parallelizer
+        self.callback = callback
 
     def process(self, input=[]):
         """Implements ``process`` interface
@@ -105,7 +108,8 @@ class ManyToOneProcessor(Processor):
 
         """
         return self.parallelizer(
-            [WrapperProcessor(self.processor, i) for i in input])
+            [WrapperProcessor(self.processor, i) for i in input],
+            callback=self.callback)
 
 
 class PipelineProcessor(Processor):

@@ -13,8 +13,7 @@ cnj_pipeline = pipeline(
 
 cnj_parallelizer = parallelizer('octavious.parallelizer.mp')
 
-
-onetomany = ManyToOneProcessor(
-    PipelineProcessor(cnj_processor, cnj_pipeline), cnj_parallelizer)
+onetomany = ManyToOneProcessor(PipelineProcessor(cnj_processor, cnj_pipeline),
+                               cnj_parallelizer)
 
 onetomany(range(1, 4))
