@@ -24,7 +24,7 @@ class Processor(object):
 
 class ParallelProcessor(Processor):
     """Fundemental ``Processor`` implemetation which handles multiple
-    processors to be executed using a pipeline within a parallelizer
+    processors to be executed using a parallelizer
 
     """
 
@@ -50,7 +50,7 @@ class ParallelProcessor(Processor):
 
 class PipelineProcessor(Processor):
     """Fundemental ``Processor`` implemetation which handles multiple
-    processors to be executed using a pipeline within a parallelizer
+    processors to be executed through a pipeline
 
     """
 
