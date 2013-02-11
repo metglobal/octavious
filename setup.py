@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='octavious',
-    py_modules=['octavious'],
+    packages=['octavious'],
     version='0.0.1',
     description='lightweight, modular parallelizing framework',
     author='Metglobal',
