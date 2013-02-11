@@ -1,4 +1,5 @@
 from octavious.pipeline import Plugin, Pipeline
+from functools import partial
 
 
 def load_module(module_path, symbols=[]):
@@ -36,29 +37,15 @@ def call_symbol(module_path, symbol_name, *args, **kwargs):
     return symbol(*args, **kwargs)
 
 
-def plugin(module_path, *args, **kwargs):
-    """Automatically loads and instantiates a plugin class by probing the
-    symbol name ```plugin`` with given args and kwargs
+def _wrap_call_symbol(symbol_name):
+    def aux(module_path, *args, **kwargs):
+        return call_symbol(module_path, symbol_name, *args, **kwargs)
+    return aux
 
-    :param module_path: module path
-    :param type: str
-
-    :returns: plugin instance
-    :rtype: ``Plugin``
-
-    """
-    return call_symbol(module_path, 'plugin', *args, **kwargs)
+plugin = _wrap_call_symbol('plugin')
+processor = _wrap_call_symbol('processor')
+parallelizer = _wrap_call_symbol('parallelizer')
 
 
-def backend(module_path, *args, **kwargs):
-    """Automatically loads and instantiates a backend class by probing the
-    symbol name ```backend`` with given args and kwargs
-
-    :param module_path: module path
-    :param type: str
-
-    :returns: backend instance
-    :rtype: ``Parallelizer``
-
-    """
-    return call_symbol(module_path, 'backend', *args, **kwargs)
+def pipeline(*args):
+    return Pipeline(args)

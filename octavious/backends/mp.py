@@ -3,7 +3,7 @@ from multiprocessing import Pool
 from octavious.parallelizer import Parallelizer
 
 
-class MultiProcessingBackend(Parallelizer):
+class MultiProcessingParallelizer(Parallelizer):
     """This class is basic implementation for parallelizing processors using
     python's builtin multiprocessing api
 
@@ -33,4 +33,4 @@ class MultiProcessingBackend(Parallelizer):
         pool.join()
         return results
 
-backend = MultiProcessingBackend
+parallelizer = MultiProcessingParallelizer

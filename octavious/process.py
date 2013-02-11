@@ -1,5 +1,4 @@
 from octavious.pipeline import Pipeline
-from octavious.utils import backend
 
 
 class Processor(object):
@@ -39,10 +38,7 @@ class ParallelProcessor(Processor):
 
         """
         self.processors = processors
-        if isinstance(parallelizer, str):
-            self.parallelizer = backend(parallelizer)
-        else:
-            self.parallelizer = parallelizer
+        self.parallelizer = parallelizer
 
     def process(self, input=None):
         return self.parallelizer(self.processors, input)
