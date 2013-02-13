@@ -1,7 +1,7 @@
 import unittest
 
 from octavious.pipeline import Plugin, Pipeline
-from utils import load_symbol, call_symbol
+from octavious.utils import load_symbol, call_symbol
 
 
 class Plugin1(Plugin):
