@@ -12,7 +12,7 @@ class Processor(object):
         :param type: object
 
         """
-        raise NotImplemented
+        raise NotImplementedError()
 
     def __call__(self, *args, **kwargs):
         """Convenient callable implementation to provide some syntactic sugar
