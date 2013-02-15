@@ -77,6 +77,20 @@ class Pipeline(Plugin):
         self.plugins = plugins
         self.propagates_exceptions = propagates_exceptions
 
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            result = (self.plugins == other.plugins and
+                      self.propagates_exceptions == other.propagates_exceptions)
+        else:
+            result = NotImplemented
+        return result
+
+    def __ne__(self, other):
+        result = self.__eq__(other)
+        if result is NotImplemented:
+            return result
+        return not result
+
     def pre_process(self, input):
         """Executes all inner plugins' ``pre_process`` interface in order.
         If any of them returns a non ``None`` value, it breaks the loop by
