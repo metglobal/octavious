@@ -80,7 +80,8 @@ class Pipeline(Plugin):
     def __eq__(self, other):
         if isinstance(other, type(self)):
             result = (self.plugins == other.plugins and
-                      self.propagates_exceptions == other.propagates_exceptions)
+                      self.propagates_exceptions ==
+                      other.propagates_exceptions)
         else:
             result = NotImplemented
         return result

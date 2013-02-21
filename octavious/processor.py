@@ -1,6 +1,3 @@
-from octavious.pipeline import Pipeline
-
-
 class Processor(object):
     """Base class for all processors those define a custom processing unit"""
 

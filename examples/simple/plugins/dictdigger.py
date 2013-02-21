@@ -1,5 +1,3 @@
-import json
-
 from octavious.pipeline import Plugin
 
 
