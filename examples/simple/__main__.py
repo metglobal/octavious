@@ -1,19 +1,20 @@
-from octavious.pipeline import Pipeline
 from octavious.utils import pipeline, processor, plugin, parallelizer
 from octavious.processor import ManyToOneProcessor, PipelineProcessor
 
 
-cnj_processor = processor('examples.simple.processes.chucknjoke')
+if __name__ == '__main__':
 
-cnj_pipeline = pipeline(
-    plugin('examples.simple.plugins.echo'),
-    plugin('examples.simple.plugins.dictdigger', 'value.joke'),
-    plugin('examples.simple.plugins.jsondeserializer'),
-)
+    cnj_processor = processor('examples.simple.processes.chucknjoke')
 
-cnj_parallelizer = parallelizer('octavious.parallelizer.mp')
+    cnj_pipeline = pipeline(
+        plugin('examples.simple.plugins.echo'),
+        plugin('examples.simple.plugins.dictdigger', 'value.joke'),
+        plugin('examples.simple.plugins.jsondeserializer'))
 
-onetomany = ManyToOneProcessor(PipelineProcessor(cnj_processor, cnj_pipeline),
-                               cnj_parallelizer)
+    cnj_parallelizer = parallelizer('octavious.parallelizer.mp')
 
-onetomany(range(1, 4))
+    onetomany = ManyToOneProcessor(PipelineProcessor(cnj_processor,
+                                                     cnj_pipeline),
+                                   cnj_parallelizer)
+
+    onetomany(range(1, 4))
