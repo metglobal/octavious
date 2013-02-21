@@ -1,8 +1,7 @@
-from octavious.pipeline import Plugin, Pipeline
-from functools import partial
+from octavious.pipeline import Pipeline
 
 
-def load_module(module_path, symbols=[]):
+def load_module(module_path, symbols=()):
     """Loads a module by given module path
 
     :param module_path: module path

@@ -6,6 +6,28 @@ Octavious
 Octavious is a very lightweight mutli processing framework helps you parallelize
 your tasks within a plugin pipeline system.
 
+Run the example app:
+--------------------
+
+::
+
+    $ python -m unittest -v octavious.tests
+    test_pipeline (octavious.tests.TestPipeline) ... ok
+    test_call_symbol (octavious.tests.TestUtils) ... ok
+    test_load_symbol (octavious.tests.TestUtils) ... ok
+
+    ----------------------------------------------------------------------
+    Ran 3 tests in 0.001s
+
+    OK
+    $ python -m examples.simple
+    * Chuck Norris uses ribbed condoms inside out, so he gets the pleasure.
+
+    * Chuck Norris doesn't read books. He stares them down until he gets the information he wants.
+
+    * MacGyver can build an airplane out of gum and paper clips. Chuck Norris can kill him and take it.
+
+
 Currently in very early stages, please stay tuned...
 
 License
