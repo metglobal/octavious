@@ -103,7 +103,7 @@ class Pipeline(Plugin):
         """
         for plugin in self.plugins:
             output = plugin.pre_process(input)
-            if output:
+            if output is not None:
                 return output
 
     def post_process(self, input, output):
