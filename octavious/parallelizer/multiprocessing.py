@@ -33,11 +33,13 @@ class MultiProcessingParallelizer(Parallelizer):
             if callback:
                 callback(result, cumulative=results)
         pool = Pool(processes=self.worker_count)
+
         for processor in processors:
             pool.apply_async(
                 processor, (input,), callback=aux)
         pool.close()
         pool.join()
         return results
+
 
 parallelizer = MultiProcessingParallelizer
