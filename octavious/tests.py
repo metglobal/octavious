@@ -78,7 +78,7 @@ class TestPipeline(unittest.TestCase):
             self.assertTrue(output['pre_processed_3'])
 
 
-class GeventTests(unittest.TestCase):
+class TestGeventParallelizer(unittest.TestCase):
 
     def setUp(self):
         try:
@@ -86,11 +86,11 @@ class GeventTests(unittest.TestCase):
         except ImportError:
             self.skipTest("gevent library is not found.")
         else:
-            self.serializer_class = GeventParallelizer
+            self.parallelizer_class = GeventParallelizer
 
     @patch("gevent.monkey.patch_all")
     def test_monkey_patch(self, patch_all):
-        self.serializer_class()
+        self.parallelizer_class()
         patch_all.assert_any_call()
 
     @patch("gevent.spawn")
@@ -105,13 +105,12 @@ class GeventTests(unittest.TestCase):
         def side_effect(callback):
             callback(greenlet)
 
-        greenlet.link = side_effect
+        greenlet.link.side_effect = side_effect
         spawn.return_value = greenlet
 
         processor = Mock()
-        parallelizer = self.serializer_class(patch_builtins=False)
-        results = parallelizer.parallelize(processors=[processor],
-                                           input=input_value)
+        parallelizer = self.parallelizer_class(patch_builtins=False)
+        results = parallelizer(processors=[processor], input=input_value)
 
         spawn.assert_called_with(processor, "foo")
         joinall.assert_called_with([greenlet])
