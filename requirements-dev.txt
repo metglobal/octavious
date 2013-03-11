@@ -4,4 +4,5 @@ distribute
 nose
 pep8
 pyflakes
+mock
 
