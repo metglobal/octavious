@@ -1,5 +1,7 @@
 import unittest
 
+from mock import patch, Mock
+
 from octavious.pipeline import Plugin, Pipeline
 from octavious.utils import load_symbol, call_symbol
 
@@ -74,6 +76,47 @@ class TestPipeline(unittest.TestCase):
             self.assertTrue(output['pre_processed_2'])
         with self.assertRaises(KeyError):
             self.assertTrue(output['pre_processed_3'])
+
+
+class GeventTests(unittest.TestCase):
+
+    def setUp(self):
+        try:
+            from octavious.parallelizer.ge import GEventParallelizer
+        except ImportError:
+            self.skipTest("gevent library is not found.")
+        else:
+            self.serializer_class = GEventParallelizer
+
+    @patch("gevent.monkey.patch_all")
+    def test_monkey_patch(self, patch_all):
+        self.serializer_class()
+        patch_all.assert_any_call()
+
+    @patch("gevent.spawn")
+    @patch("gevent.joinall")
+    def test_parallelizing(self, joinall, spawn):
+        input_value = "foo"
+        output_value = "bar"
+
+        greenlet = Mock()
+        greenlet.value = output_value
+
+        def side_effect(callback):
+            callback(greenlet)
+
+        greenlet.link = side_effect
+        spawn.return_value = greenlet
+
+        processor = Mock()
+        parallelizer = self.serializer_class(patch_builtins=False)
+        results = parallelizer.parallelize(processors=[processor],
+                                           input=input_value)
+
+        spawn.assert_called_with(processor, "foo")
+        joinall.assert_called_with([greenlet])
+        self.assertEqual(results, ["bar"])
+
 
 if __name__ == '__main__':
     unittest.main()
