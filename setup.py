@@ -10,5 +10,6 @@ setup(
     url='https://github.com/metglobal/octavious',
     extras_require={
         'celery_parallelizer': ["celery"]
+        'gevent_parallelizer': ["gevent"]
     }
 )
