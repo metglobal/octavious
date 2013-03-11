@@ -11,7 +11,7 @@ if __name__ == '__main__':
         plugin('examples.simple.plugins.dictdigger', 'value.joke'),
         plugin('examples.simple.plugins.jsondeserializer'))
 
-    cnj_parallelizer = parallelizer('octavious.parallelizer.mp')
+    cnj_parallelizer = parallelizer('octavious.parallelizer.multiprocessing')
 
     onetomany = ManyToOneProcessor(PipelineProcessor(cnj_processor,
                                                      cnj_pipeline),
