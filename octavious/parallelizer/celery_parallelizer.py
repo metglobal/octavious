@@ -7,6 +7,7 @@ import celery
 class CeleryParallelizer(Parallelizer):	
 
 #Works with celery and Get the processors work as a group asynchronously.
+	
 	def parallelize(self, processors, input=None, callback=None):
 		result =  celery.group((celery.task(function)).s(processor(input)) \
 								for processor in processors).apply_async()

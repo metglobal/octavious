@@ -8,6 +8,8 @@ if __name__ == '__main__':
 
     foo_pipeline = pipeline(plugin('examples.dummy.plugins.lower'),
                             plugin('examples.dummy.plugins.slugify'))
+    #CHOOSE THE PARALLELYZER THAT YOU WANT YOU USE // DJANGO MULTIPROCESSOR OR CELERY
+
     celery_parallelizer = parallelizer('octavious.parallelizer.celery_parallelizer')
     #celery_parallelizer = parallelizer('octavious.parallelizer.mp')
 
@@ -15,4 +17,4 @@ if __name__ == '__main__':
                                                      foo_pipeline),
                                    celery_parallelizer)
 
-    manytoone(['Hello', 'World', 'Howdy', 'You'])
+    manytoone(['Hello World', 'World', 'Howdy', 'You'])
