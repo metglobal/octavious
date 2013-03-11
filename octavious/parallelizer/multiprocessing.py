@@ -32,6 +32,7 @@ class MultiProcessingParallelizer(Parallelizer):
             results.append(result)
             if callback:
                 callback(result, cumulative=results)
+                
         pool = Pool(processes=self.worker_count)
 
         for processor in processors:
