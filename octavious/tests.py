@@ -82,11 +82,11 @@ class GeventTests(unittest.TestCase):
 
     def setUp(self):
         try:
-            from octavious.parallelizer.ge import GEventParallelizer
+            from octavious.parallelizer.ge import GeventParallelizer
         except ImportError:
             self.skipTest("gevent library is not found.")
         else:
-            self.serializer_class = GEventParallelizer
+            self.serializer_class = GeventParallelizer
 
     @patch("gevent.monkey.patch_all")
     def test_monkey_patch(self, patch_all):

@@ -3,7 +3,7 @@ import gevent
 from octavious.parallelizer import Parallelizer
 
 
-class GEventParallelizer(Parallelizer):
+class GeventParallelizer(Parallelizer):
     """A parallelizer implementation for parallelizing via green threads using
     gevent"""
 
@@ -38,4 +38,4 @@ class GEventParallelizer(Parallelizer):
 
         return results
 
-parallelizer = GEventParallelizer
+parallelizer = GeventParallelizer
