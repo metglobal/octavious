@@ -9,6 +9,7 @@ if __name__ == '__main__':
     driver = len(sys.argv) > 1 and sys.argv[1] or 'multiprocessing'
 
     cnj_processor = processor('examples.simple.processes.chucknjoke')
+
     cnj_pipeline = pipeline(
         plugin('examples.simple.plugins.dictdigger', 'value.joke'),
         plugin('examples.simple.plugins.jsondeserializer'))
