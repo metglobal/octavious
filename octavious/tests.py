@@ -82,7 +82,7 @@ class GeventTests(unittest.TestCase):
 
     def setUp(self):
         try:
-            from octavious.parallelizer.ge import GeventParallelizer
+            from octavious.parallelizer.gevent import GeventParallelizer
         except ImportError:
             self.skipTest("gevent library is not found.")
         else:
