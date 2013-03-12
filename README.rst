@@ -8,10 +8,10 @@ your tasks within a plugin pipeline system.
 
 We currently support four parallelizer as in the list below:
 
-- Celery
-- Multiprocessing Python builtin parallelizer
-- Threading Python builtin parallelizer
-- Green Threads
+.. _Celery: http://www.celeryproject.org/
+.. _Multiprocessing: http://docs.python.org/2/library/multiprocessing.html
+.. _Threading: http://docs.python.org/2/library/threading.html
+.. _Green Threads: http://www.gevent.org/
 
 Octavious takes your processes via a help of a processor.Via Plugin/Pipeline
 structure you can control the past and post of your parallelized processes.
@@ -19,12 +19,13 @@ structure you can control the past and post of your parallelized processes.
 Usage:
 ------
 
--Processors:
+ Processors:
 -------------
 
-You have to write your processor that's going to be work as parallelized.
+You have to define your processor that's going to be work as parallelized.
 
-As you may see in the example :
+We have a example for you:
+
 ::
     # processes/chucknjoke.py
     import urllib
@@ -39,18 +40,20 @@ As you may see in the example :
 
 
 In this example defined ChuckNJokeProcessor joins to given url and
-and bring the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
+and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
 
 
--Plugins:
+ Plugins:
 ---------
+
 Plugins already have methods such as pre-process and post-process. If you want
-to makes changes on your input data coming from your processor you have to kill the defined pre-process, and if you want to make changes on output data you have to kill the defined post process.
+to make changes on your input data coming from your processor you have to kill the defined pre-process, and if you want to make changes on output data you have to kill the defined post process.
 
 As you may see in the example below, this is our first plugin.
 We are going to take the RAW JSON data and decode;
 
 ::
+
     # plugins/jsondeserializer.py
     import json
     from octavious.pipeline import Plugin
@@ -82,8 +85,10 @@ And our second plugin;
 
 This is for getting what data we want from tree structured dictionary.
 
--Pipeline:
+
+ Pipeline:
 ---------
+
 Pipelines are for running the plugins in the sequence that we desire.
 You can access to pipeline like below,
 
@@ -96,26 +101,44 @@ You can access to pipeline like below,
         plugin('chuck_norris.plugins.jsondeserializer'),
     )
 
--Parallelizer:
+ Parallelizer:
 --------------
+
 As above we have 4 parallelizer options implemented for Octavious,
-You can set the parallelizer like below;
+You can set the parallelizer settings like below;
 
-chuck_norris_parallellizer = parallelizer('octavious.parallelizer.gevent')
+For Green Thread;
+::
+    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.gevent')
 
--PipelineProcessor:
+Where other options are;
+
+For multiprocessing;
+::
+    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.multiprocessing')
+
+For threading;
+::
+    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.threading')
+
+For celery;
+::
+    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.celery')
+
+ PipelineProcessor:
 -------------------
 
-This is where we connect the pipelines with processors.
+This is where we connect the designed pipelines with processors.
 
 
--ManyToOneProcessor and OneToManyProcessor:
+ ManyToOneProcessor and OneToManyProcessor:
 -------------------------------------------
 
-OneToManyProcessor makes your processor works with just one input where ManyToOneProcessor makes your processor works with multiple inputs.
+-OneToManyProcessor makes your processor works with just one input.
+-ManyToOneProcessor makes your processor works with multiple inputs.
 
 We are going to work with ManyToOneProcessor in ChuckNorris.
-This is our last setting below, that we make our code work.
+This is our last setting below as a summary, that we will make our code work.
 
 ::
 
