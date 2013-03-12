@@ -3,8 +3,7 @@ Octavious
 =========
 .. image:: https://github.com/metglobal/octavious/raw/master/dococtopus.gif
 
-Octavious is a very lightweight mutli processing framework helps you parallelize
-your tasks within a plugin pipeline system.
+Octavious is a very lightweight mutliprocessing framework helps you to parallelize your tasks within a plugin pipeline system.
 
 We currently support four parallelizer as in the list below,
 
@@ -42,7 +41,7 @@ We have a example for you;
 
     processor = ChuckNJokeProcessor
 
-In this example defined ChuckNJokeProcessor joins to given url and
+In this example defined, ChuckNJokeProcessor joins to given url
 and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
 
 
@@ -92,7 +91,7 @@ This is for getting what data we want from tree structured dictionary.
 Pipeline:
 ---------
 
-Pipelines are for running the plugins in the sequences that we desire.
+Pipelines are for running the plugins in the sequence that we desire.
 You can access to pipeline like below,
 
 ::
