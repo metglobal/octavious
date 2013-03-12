@@ -21,7 +21,7 @@ structure you can control the past and post of your parallelized processes.
 Usage:
 ------
 
-Processors:
+Processor:
 -----------
 
 You have to define your processor that's going to be working as parallelized.
@@ -45,7 +45,7 @@ In this example defined, ChuckNJokeProcessor joins to given url
 and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
 
 
-Plugins:
+Plugin:
 --------
 
 Plugins already have methods such as pre-process and post-process. If you want
