@@ -19,12 +19,12 @@ structure you can control the past and post of your parallelized processes.
 Usage:
 ------
 
- Processors:
--------------
+Processors:
+-----------
 
 You have to define your processor that's going to be work as parallelized.
 
-We have a example for you:
+We have a example for you;
 
 ::
     # processes/chucknjoke.py
@@ -43,8 +43,8 @@ In this example defined ChuckNJokeProcessor joins to given url and
 and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
 
 
- Plugins:
----------
+Plugins:
+--------
 
 Plugins already have methods such as pre-process and post-process. If you want
 to make changes on your input data coming from your processor you have to kill the defined pre-process, and if you want to make changes on output data you have to kill the defined post process.
@@ -86,7 +86,7 @@ And our second plugin;
 This is for getting what data we want from tree structured dictionary.
 
 
- Pipeline:
+Pipeline:
 ---------
 
 Pipelines are for running the plugins in the sequence that we desire.
@@ -101,8 +101,8 @@ You can access to pipeline like below,
         plugin('chuck_norris.plugins.jsondeserializer'),
     )
 
- Parallelizer:
---------------
+Parallelizer:
+-------------
 
 As above we have 4 parallelizer options implemented for Octavious,
 You can set the parallelizer settings like below;
@@ -125,14 +125,14 @@ For celery;
 ::
     chuck_norris_parallellizer = parallelizer('octavious.parallelizer.celery')
 
- PipelineProcessor:
--------------------
+PipelineProcessor:
+------------------
 
 This is where we connect the designed pipelines with processors.
 
 
- ManyToOneProcessor and OneToManyProcessor:
--------------------------------------------
+ManyToOneProcessor and OneToManyProcessor:
+------------------------------------------
 
 -OneToManyProcessor makes your processor works with just one input.
 -ManyToOneProcessor makes your processor works with multiple inputs.
