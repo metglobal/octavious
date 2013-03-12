@@ -1,14 +1,13 @@
 from __future__ import absolute_import
 import threading
 from octavious.parallelizer import Parallelizer
+from Queue import Queue
 
 
-def parallelizer_task(processor, input, callback):
-    output = processor(input)
+def parallelizer_task(q, processor, input, callback):
+    q.put(processor(input))
     if callback:
-        callback(output)
-    thread = threading.currentThread()
-    thread.result = output
+        callback(q.put(processor(input)))
 
 
 class ThreadsParallelizer(Parallelizer):
@@ -21,15 +20,13 @@ class ThreadsParallelizer(Parallelizer):
         """Convenient ``Parallelizer.parallelize`` implementation
         using `threading` library.
         """
+        q = Queue()
         threads = []
         for processor in processors:
             t = threading.Thread(target=parallelizer_task,
-                                 args=(processor, input, callback))
-            threads.append(t)
+                                 args=(q, processor, input, callback))
+            t.daemon = True
             t.start()
-
-        for th in threads:
-            th.join()
-        results = [th.result for th in threads]
-        return results
+            threads.append(q.get())
+        return threads
 parallelizer = ThreadsParallelizer
