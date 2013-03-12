@@ -6,6 +6,136 @@ Octavious
 Octavious is a very lightweight mutli processing framework helps you parallelize
 your tasks within a plugin pipeline system.
 
+We currently support four parallelizer as in the list below:
+
+- Celery
+- Multiprocessing Python builtin parallelizer
+- Threading Python builtin parallelizer
+- Green Threads
+
+Octavious takes your processes via a help of a processor.Via Plugin/Pipeline
+structure you can control the past and post of your parallelized processes.
+
+Usage:
+------
+
+-Processors:
+-------------
+
+You have to write your processor that's going to be work as parallelized.
+
+As you may see in the example :
+::
+    # processes/chucknjoke.py
+    import urllib
+    from octavious.processor import Processor
+
+    class ChuckNJokeProcessor(Processor):
+        def process(self, input):
+            url = 'http://api.icndb.com/jokes/%s'
+            return urllib.urlopen(url % input).read()
+
+    processor = ChuckNJokeProcessor
+
+
+In this example defined ChuckNJokeProcessor joins to given url and
+and bring the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
+
+
+-Plugins:
+---------
+Plugins already have methods such as pre-process and post-process. If you want
+to makes changes on your input data coming from your processor you have to kill the defined pre-process, and if you want to make changes on output data you have to kill the defined post process.
+
+As you may see in the example below, this is our first plugin.
+We are going to take the RAW JSON data and decode;
+
+::
+    # plugins/jsondeserializer.py
+    import json
+    from octavious.pipeline import Plugin
+
+    class JsonDeserializerPlugin(Plugin):
+        def post_process(self, input, output):
+            return json.loads(output)
+
+    plugin = JsonDeserializerPlugin
+
+And our second plugin;
+
+::
+
+    # plugins/dictdigger.py
+    from octavious.pipeline import Plugin
+
+    class DictDiggerPlugin(Plugin):
+        def __init__(self, path):
+            self.path = path
+
+        def post_process(self, input, output):
+            entry = output
+            for component in self.path.split('.'):
+                entry = entry.get(component)
+            return entry
+
+    plugin = DictDiggerPlugin
+
+This is for getting what data we want from tree structured dictionary.
+
+-Pipeline:
+---------
+Pipelines are for running the plugins in the sequence that we desire.
+You can access to pipeline like below,
+
+::
+
+    from octavious.utils import pipeline, plugin
+
+    chuck_norris_pipeline = pipeline(
+        plugin('chuck_norris.plugins.dictdigger', 'value.joke'),
+        plugin('chuck_norris.plugins.jsondeserializer'),
+    )
+
+-Parallelizer:
+--------------
+As above we have 4 parallelizer options implemented for Octavious,
+You can set the parallelizer like below;
+
+chuck_norris_parallellizer = parallelizer('octavious.parallelizer.gevent')
+
+-PipelineProcessor:
+-------------------
+
+This is where we connect the pipelines with processors.
+
+
+-ManyToOneProcessor and OneToManyProcessor:
+-------------------------------------------
+
+OneToManyProcessor makes your processor works with just one input where ManyToOneProcessor makes your processor works with multiple inputs.
+
+We are going to work with ManyToOneProcessor in ChuckNorris.
+This is our last setting below, that we make our code work.
+
+::
+
+    from octavious.utils import pipeline, processor, plugin, parallelizer
+    from octavious.processor import ManyToOneProcessor, PipelineProcessor
+
+    chn_processor = processor('chuck_norris.processes.chucknjoke')
+    chn_parallellizer = parallelizer('octavious.parallelizer.gevent')
+    chn_pipeline = pipeline(
+        plugin('chuck_norris.plugins.dictdigger', 'value.joke'),
+        plugin('chuck_norris.plugins.jsondeserializer'),
+    )
+
+    manytoone = ManyToOneProcessor(
+                  PipelineProcessor(cnj_processor, chn_pipeline),
+                  chn_parallelizer)
+
+    for result in manytoone(range(1, 4)):
+        print '*', result
+
 Run the example app:
 --------------------
 
@@ -29,6 +159,10 @@ Run the example app:
 
 
 Currently in very early stages, please stay tuned...
+
+
+
+
 
 License
 -------

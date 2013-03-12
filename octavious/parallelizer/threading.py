@@ -5,9 +5,9 @@ from Queue import Queue
 
 
 def parallelizer_task(q, processor, input, callback):
-    q.put(processor(input))
+    output = q.put(processor(input))
     if callback:
-        callback(q.put(processor(input)))
+        callback(output)
 
 
 class ThreadsParallelizer(Parallelizer):
@@ -21,12 +21,10 @@ class ThreadsParallelizer(Parallelizer):
         using `threading` library.
         """
         q = Queue()
-        threads = []
         for processor in processors:
             t = threading.Thread(target=parallelizer_task,
                                  args=(q, processor, input, callback))
             t.daemon = True
             t.start()
-            threads.append(q.get())
-        return threads
+        return [q.get() for i in range(len(processors))]
 parallelizer = ThreadsParallelizer
