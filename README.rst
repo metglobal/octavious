@@ -6,12 +6,15 @@ Octavious
 Octavious is a very lightweight mutli processing framework helps you parallelize
 your tasks within a plugin pipeline system.
 
-We currently support four parallelizer as in the list below:
+We currently support four parallelizer as in the list below,
 
--Celery
--Multiprocessing
--Threading
--Green Threads
+- Celery
+
+- Multiprocessing
+
+- Threading
+
+- Green Threads
 
 Octavious takes your processes via a help of a processor.Via Plugin/Pipeline
 structure you can control the past and post of your parallelized processes.
