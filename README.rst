@@ -8,10 +8,10 @@ your tasks within a plugin pipeline system.
 
 We currently support four parallelizer as in the list below:
 
-.. _Celery: http://www.celeryproject.org/
-.. _Multiprocessing: http://docs.python.org/2/library/multiprocessing.html
-.. _Threading: http://docs.python.org/2/library/threading.html
-.. _Green Threads: http://www.gevent.org/
+-Celery
+-Multiprocessing
+-Threading
+-Green Threads
 
 Octavious takes your processes via a help of a processor.Via Plugin/Pipeline
 structure you can control the past and post of your parallelized processes.
@@ -27,6 +27,7 @@ You have to define your processor that's going to be work as parallelized.
 We have a example for you;
 
 ::
+
     # processes/chucknjoke.py
     import urllib
     from octavious.processor import Processor
@@ -37,7 +38,6 @@ We have a example for you;
             return urllib.urlopen(url % input).read()
 
     processor = ChuckNJokeProcessor
-
 
 In this example defined ChuckNJokeProcessor joins to given url and
 and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
