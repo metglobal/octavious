@@ -25,7 +25,7 @@ Usage:
 Processors:
 -----------
 
-You have to define your processor that's going to be work as parallelized.
+You have to define your processor that's going to be working as parallelized.
 
 We have a example for you;
 
@@ -92,7 +92,7 @@ This is for getting what data we want from tree structured dictionary.
 Pipeline:
 ---------
 
-Pipelines are for running the plugins in the sequence that we desire.
+Pipelines are for running the plugins in the sequences that we desire.
 You can access to pipeline like below,
 
 ::
@@ -137,8 +137,8 @@ This is where we connect the designed pipelines with processors.
 ManyToOneProcessor and OneToManyProcessor:
 ------------------------------------------
 
--OneToManyProcessor makes your processor works with just one input.
--ManyToOneProcessor makes your processor works with multiple inputs.
+- OneToManyProcessor makes your processor works with just one input.
+- ManyToOneProcessor makes your processor works with multiple inputs.
 
 We are going to work with ManyToOneProcessor in ChuckNorris.
 This is our last setting below as a summary, that we will make our code work.
