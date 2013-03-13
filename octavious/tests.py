@@ -117,5 +117,45 @@ class TestGeventParallelizer(unittest.TestCase):
         self.assertEqual(results, ["bar"])
 
 
+class TestEventletParallelizer(unittest.TestCase):
+
+    def setUp(self):
+        try:
+            from octavious.parallelizer.eventlet import EventletParallelizer
+        except ImportError:
+            self.skipTest("eventlet library is not found.")
+        else:
+            self.parallelizer_class = EventletParallelizer
+
+    @patch("eventlet.monkey_patch")
+    def test_monkey_patch(self, monkey_patch):
+        self.parallelizer_class()
+        monkey_patch.assert_any_call()
+
+    @patch("eventlet.GreenPool")
+    def test_parallelizer(self, pool_class):
+        input_value = "foo"
+        output_value = "bar"
+
+        green_thread = Mock()
+        green_thread.wait.return_value = output_value
+
+        pool = pool_class()
+
+        def side_effect(callback):
+            callback(green_thread)
+
+        green_thread.link.side_effect = side_effect
+        pool.spawn.return_value = green_thread
+
+        processor = Mock()
+        parallelizer = self.parallelizer_class(patch_builtins=False)
+        results = parallelizer(processors=[processor], input=input_value)
+
+        pool.spawn.assert_called_with(processor, "foo")
+        pool.waitall.asssert_any_call()
+        self.assertEqual(results, ["bar"])
+
+
 if __name__ == '__main__':
     unittest.main()
