@@ -3,32 +3,26 @@ Octavious
 =========
 .. image:: https://github.com/metglobal/octavious/raw/master/dococtopus.gif
 
-Octavious is a very lightweight mutliprocessing framework helps you to parallelize your tasks within a plugin pipeline system.
+Octavious is a very lightweight concurrency framework helps you parallelize
+your tasks through a plugin pipeline system.
 
-We currently support four parallelizer as in the list below,
+Currently it supports concurrency technologies such as:
 
-- Celery
+* Multiprocessing (python builtin)
+* Threading (python builtin)
+* Celery (message Queues)
+* Gevent (green threads)
 
-- Multiprocessing
+Quick Overview
+--------------
 
-- Threading
+Processor
+~~~~~~~~~
 
-- Green Threads
+First, You have to define your processor that's going to be working as
+parallelized. Let's have look at the example below
 
-Octavious takes your processes via a help of a processor.Via Plugin/Pipeline
-structure you can control the past and post of your parallelized processes.
-
-Usage:
-------
-
-Processor:
------------
-
-You have to define your processor that's going to be working as parallelized.
-
-We have a example for you;
-
-::
+.. code:: python
 
     # processes/chucknjoke.py
     import urllib
@@ -36,25 +30,26 @@ We have a example for you;
 
     class ChuckNJokeProcessor(Processor):
         def process(self, input):
-            url = 'http://api.icndb.com/jokes/%s'
+            url = 'http://api.icndb.com/jokes/%s' % input
             return urllib.urlopen(url % input).read()
 
     processor = ChuckNJokeProcessor
 
-In this example defined, ChuckNJokeProcessor joins to given url
-and brings the Chuck Norris Jokes as parallelized that are going to be processed via the plugins that we are going to define.
+In this example defined, `ChuckNJokeProcessor` joins to given url
+and brings the Chuck Norris Jokes as parallelized that are going to be
+processed via the plugins.
 
+Plugin
+~~~~~~
 
-Plugin:
---------
+Plugins already have methods such as `pre-process` and `post-process`. If you
+want to make changes on your input data coming from your processor you have to implement the defined pre-process, and if you want to make changes on output data
+you have to implement the defined post process.
 
-Plugins already have methods such as pre-process and post-process. If you want
-to make changes on your input data coming from your processor you have to kill the defined pre-process, and if you want to make changes on output data you have to kill the defined post process.
+As you may see in the example below, this is our first plugin. We are going to
+take the RAW JSON data and decode
 
-As you may see in the example below, this is our first plugin.
-We are going to take the RAW JSON data and decode;
-
-::
+.. code:: python
 
     # plugins/jsondeserializer.py
     import json
@@ -66,9 +61,9 @@ We are going to take the RAW JSON data and decode;
 
     plugin = JsonDeserializerPlugin
 
-And our second plugin;
+And our second plugin
 
-::
+.. code:: python
 
     # plugins/dictdigger.py
     from octavious.pipeline import Plugin
@@ -87,14 +82,13 @@ And our second plugin;
 
 This is for getting what data we want from tree structured dictionary.
 
-
-Pipeline:
----------
+Pipeline
+~~~~~~~~
 
 Pipelines are for running the plugins in the sequence that we desire.
-You can access to pipeline like below,
+You can create a pipeline with a buch of plugins just like below
 
-::
+.. code:: python
 
     from octavious.utils import pipeline, plugin
 
@@ -103,46 +97,36 @@ You can access to pipeline like below,
         plugin('chuck_norris.plugins.jsondeserializer'),
     )
 
-Parallelizer:
--------------
+Parallelizer
+~~~~~~~~~~~~
 
-As above we have 4 parallelizer options implemented for Octavious,
-You can set the parallelizer settings like below;
+As above we have 4 parallelizer options implemented for Octavious. You can set
+the parallelizer settings like below
 
-For Green Thread;
-::
-    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.gevent')
+.. code:: python
 
-Where other options are;
+    chuck_norris_parallellizer = parallelizer(
+        'octavious.parallelizer.multiprocessing')
 
-For multiprocessing;
-::
-    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.multiprocessing')
+You can also use desired parallelizer backend with choice of
 
-For threading;
-::
-    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.threading')
+* `octavious.parallelizer.threading`
+* `octavious.parallelizer.gevent`
+* `octavious.parallelizer.celery`
 
-For celery;
-::
-    chuck_norris_parallellizer = parallelizer('octavious.parallelizer.celery')
+Convenient Processors
+~~~~~~~~~~~~~~~~~~~~~
 
-PipelineProcessor:
-------------------
+There are some auxialary `Processor` implementations help you define
+parallelizing workflows.
 
-This is where we connect the designed pipelines with processors.
+* `OneToManyProcessor` wraps your processors to work with just one input.
+* `ManyToOneProcessor` wraps your processor to works with multiple inputs.
 
-
-ManyToOneProcessor and OneToManyProcessor:
-------------------------------------------
-
-- OneToManyProcessor makes your processor works with just one input.
-- ManyToOneProcessor makes your processor works with multiple inputs.
-
-We are going to work with ManyToOneProcessor in ChuckNorris.
+We are going to work with `ManyToOneProcessor` in ChuckNorris example.
 This is our last setting below as a summary, that we will make our code work.
 
-::
+.. code:: python
 
     from octavious.utils import pipeline, processor, plugin, parallelizer
     from octavious.processor import ManyToOneProcessor, PipelineProcessor
@@ -161,10 +145,21 @@ This is our last setting below as a summary, that we will make our code work.
     for result in manytoone(range(1, 4)):
         print '*', result
 
-Run the example app:
---------------------
+Run the example app
 
-::
+.. code:: console
+
+    $ python -m examples.simple
+    * Chuck Norris uses ribbed condoms inside out, so he gets the pleasure.
+    * Chuck Norris doesn't read books. He stares them down until he gets the information he wants.
+    * MacGyver can build an airplane out of gum and paper clips. Chuck Norris can kill him and take it.
+
+Tests
+-----
+
+Octavious has a bunch of unit tests. To run them, simply type
+
+.. code:: console
 
     $ python -m unittest -v octavious.tests
     test_pipeline (octavious.tests.TestPipeline) ... ok
@@ -175,26 +170,31 @@ Run the example app:
     Ran 3 tests in 0.001s
 
     OK
-    $ python -m examples.simple
-    * Chuck Norris uses ribbed condoms inside out, so he gets the pleasure.
 
-    * Chuck Norris doesn't read books. He stares them down until he gets the information he wants.
-
-    * MacGyver can build an airplane out of gum and paper clips. Chuck Norris can kill him and take it.
-
+Status
+------
 
 Currently in very early stages, please stay tuned...
 
-
-
-
-
 License
 -------
+
 Copyright (c) 2013 Metglobal LLC.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the 'Software'), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
