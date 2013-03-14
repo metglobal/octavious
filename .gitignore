@@ -9,5 +9,6 @@ docs/api
 coverage
 .DS_Store
 .vagrant
+/.idea
 manifests/build
 .idea

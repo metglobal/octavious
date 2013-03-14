@@ -157,5 +157,58 @@ class TestEventletParallelizer(unittest.TestCase):
         self.assertEqual(results, ["bar"])
 
 
+class TestCeleryParallelizer(unittest.TestCase):
+    def setUp(self):
+        try:
+            from octavious.parallelizer.celery import CeleryParallelizer
+        except ImportError:
+            self.skiptTest("celery library is not found")
+        else:
+            self.parallelizer_class = CeleryParallelizer
+
+    @patch("celery.group")
+    @patch("octavious.parallelizer.celery.parallelizer_task")
+    def test_parallelizing(self, parallelizer_task, group):
+
+        input_value = "foo"
+        output_value = "bar"
+
+        processor = Mock()
+        processor.return_value = output_value
+
+        parallelizer = self.parallelizer_class()
+        parallelizer_output = parallelizer(processors=[processor], input=input_value, callback=None)
+
+        parallelizer_task.s.assert_called_with(processor, "foo", None)
+        group.assert_called_with([parallelizer_task.s(processor, "foo", None)])
+        self.assertEqual(parallelizer_output, group().apply_async().get())
+
+
+class TestThreadingParallelizer(unittest.TestCase):
+
+    def setUp(self):
+        from octavious.parallelizer.threading import ThreadsParallelizer
+        self.parallelizer_class = ThreadsParallelizer
+
+    @patch("threading.Thread")
+    @patch("octavious.parallelizer.threading.Queue")
+    @patch("octavious.parallelizer.threading.parallelizer_task")
+    def test_parallelizing(self, parallelizer_task, Queue, Thread):
+
+        input_value = "foo"
+        output_value = "bar"
+
+        queue = Mock()
+        Queue.side_effect = Mock(return_value=queue)
+
+        processor = Mock()
+        processor.return_value = output_value
+        parallelizer = self.parallelizer_class()
+        parallelizer_output = parallelizer(processors=[processor], input=input_value)
+
+        Thread.assert_called_with(target=parallelizer_task, args=(queue, processor, "foo", None))
+        Thread.start.assert_any_calls()
+        self.assertEqual(parallelizer_output, [queue.get()])
+
 if __name__ == '__main__':
     unittest.main()
