@@ -3,7 +3,7 @@ Octavious
 =========
 .. image:: https://github.com/metglobal/octavious/raw/master/dococtopus.gif
 
-Octavious is a very lightweight mutli processing framework helps you parallelize
+Octavious is a very lightweight multi processing framework helps you parallelize
 your tasks within a plugin pipeline system.
 
 Run the example app:
