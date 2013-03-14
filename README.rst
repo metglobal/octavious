@@ -19,8 +19,8 @@ Quick Overview
 Processor
 ~~~~~~~~~
 
-First, You have to define your processor that's going to be working as
-parallelized. Let's have look at the example below
+First of all, you have to define your processor that's going to be working as
+parallelized. Let's have look at the example below.
 
 .. code:: python
 
@@ -43,11 +43,11 @@ Plugin
 ~~~~~~
 
 Plugins already have methods such as `pre-process` and `post-process`. If you
-want to make changes on your input data coming from your processor you have to implement the defined pre-process, and if you want to make changes on output data
-you have to implement the defined post process.
+want to make changes on your input data coming from your processor you have to implement the defined `pre-process`, and if you want to make changes on output data
+you have to implement the defined `post process`.
 
 As you may see in the example below, this is our first plugin. We are going to
-take the RAW JSON data and decode
+take the RAW JSON data and decode.
 
 .. code:: python
 
@@ -86,7 +86,7 @@ Pipeline
 ~~~~~~~~
 
 Pipelines are for running the plugins in the sequence that we desire.
-You can create a pipeline with a buch of plugins just like below
+You can create a pipeline with a bunch of plugins just like below.
 
 .. code:: python
 
@@ -113,11 +113,12 @@ You can also use desired parallelizer backend with choice of
 * `octavious.parallelizer.threading`
 * `octavious.parallelizer.gevent`
 * `octavious.parallelizer.celery`
+* `octavious.parallelizer.eventlet`
 
 Convenient Processors
 ~~~~~~~~~~~~~~~~~~~~~
 
-There are some auxialary `Processor` implementations help you define
+There are some auxiliary `Processor` implementations help you define
 parallelizing workflows.
 
 * `OneToManyProcessor` wraps your processors to work with just one input.
@@ -174,7 +175,7 @@ Octavious has a bunch of unit tests. To run them, simply type
 Status
 ------
 
-Currently in very early stages, please stay tuned...
+Currently in very early stages, please stay tuned!
 
 License
 -------
