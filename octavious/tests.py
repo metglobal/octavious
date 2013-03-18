@@ -196,19 +196,47 @@ class TestThreadingParallelizer(unittest.TestCase):
     def test_parallelizing(self, parallelizer_task, Queue, Thread):
 
         input_value = "foo"
-        output_value = "bar"
 
         queue = Mock()
         Queue.side_effect = Mock(return_value=queue)
 
         processor = Mock()
-        processor.return_value = output_value
         parallelizer = self.parallelizer_class()
         parallelizer_output = parallelizer(processors=[processor], input=input_value)
 
         Thread.assert_called_with(target=parallelizer_task, args=(queue, processor, "foo", None))
         Thread.start.assert_any_calls()
         self.assertEqual(parallelizer_output, [queue.get()])
+
+
+class TestMultiprocessingParallelizer(unittest.TestCase):
+
+    def setUp(self):
+        from octavious.parallelizer.multiprocessing import MultiProcessingParallelizer
+        self.parallelizer_class = MultiProcessingParallelizer
+
+    @patch("octavious.parallelizer.multiprocessing.Pool")
+    def test_parallelizing(self, pool_class):
+
+        pool = pool_class()
+
+        input_value = "foo"
+        worker_count = 4
+
+        result = Mock()
+
+        def side_effect(precessor, arguments, callback):
+            callback(result)
+
+        pool.apply_async.side_effect = side_effect
+        processor = Mock()
+        parallelizer = self.parallelizer_class()
+        results = parallelizer(processors=[processor], input=input_value)
+        pool_class.assert_called_with(processes=worker_count)
+        pool_class.apply_async.assert_any_calls(processor, (input_value,))
+        pool_class.close.assert_any_calls()
+        pool_class.join.assert_any_calls()
+        self.assertEqual(results, [result])
 
 if __name__ == '__main__':
     unittest.main()
