@@ -162,7 +162,7 @@ class TestCeleryParallelizer(unittest.TestCase):
         try:
             from octavious.parallelizer.celery import CeleryParallelizer
         except ImportError:
-            self.skiptTest("celery library is not found")
+            self.skipTest("celery library is not found")
         else:
             self.parallelizer_class = CeleryParallelizer
 
