@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='octavious',
-    packages=['octavious'],
-    version='0.0.1',
+    packages=['octavious', 'octavious.parallelizer'],
+    version='0.0.2',
     description='lightweight, modular parallelizing framework',
     author='Metglobal',
     author_email='kadir.pekel@metglobal.com',
